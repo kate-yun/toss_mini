@@ -13,7 +13,7 @@ class BankContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<BankService>(
-      // provider로 BankService를 받기 위해 Consumer로 감싼다.
+      // provider로 BankService를 받기 위해 최상단에 Consumer로 감싼다.
       builder: (context, service, child) {
         return ListTile(
           leading: Image.asset(
@@ -22,7 +22,7 @@ class BankContainer extends StatelessWidget {
           ), //bank.bankImage가 null이면 ''.
           title: Container(
             padding: EdgeInsets.only(bottom: 4.0),
-            child: Text(bank.name ?? "XX은행"),
+            child: Text(bank.name ?? "땡땡은행 계좌"),
           ),
           subtitle: Text("잔여금액"),
           contentPadding: EdgeInsets.zero, // ListTile의 외곽 padding값.

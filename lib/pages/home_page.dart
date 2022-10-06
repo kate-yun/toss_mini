@@ -17,6 +17,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<BankService>(
+      // provider로 BankService를 받기 위해 최상단에 Consumer로 감싼다.
       builder: (context, service, child) {
         return Scaffold(
           appBar: AppBar(
@@ -69,7 +70,14 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       Row(
                         children: [
-                          Text('자산'),
+                          Text(
+                            '자산',
+                            style: TextStyle(
+                              color: TossColor.bluegrey,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                           Spacer(),
                           IconButton(
                             onPressed: () {
@@ -87,6 +95,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       ...service.myBankList.map(
                         (e) => BankContainer(bank: e),
+                        //myBankList의 bank element만큼 불러와 BankContainer(ListTile)로 적용.
                       ),
                     ],
                   ),
