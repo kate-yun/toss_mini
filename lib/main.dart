@@ -1,4 +1,5 @@
-import 'package:chang_mini/pages/splash_page.dart';
+//import 'package:chang_mini/pages/splash_page.dart';
+import 'package:chang_mini/pages/home_page.dart';
 import 'package:chang_mini/services/bank_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      home: SplashPage(),
+      home: HomePage(), // HomePage 작업을 위한 splashpage 임시 생략.
     );
   }
 }
