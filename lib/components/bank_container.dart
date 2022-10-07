@@ -1,3 +1,5 @@
+import 'package:chang_mini/config/colors.dart';
+import 'package:chang_mini/pages/send_page.dart';
 import 'package:chang_mini/services/bank_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,12 +24,37 @@ class BankContainer extends StatelessWidget {
           ), //bank.bankImage가 null이면 ''.
           title: Container(
             padding: EdgeInsets.only(bottom: 4.0),
-            child: Text(bank.name ?? "땡땡은행 계좌"),
+            child: Text(
+              bank.name ?? "땡땡은행 계좌",
+              style: TextStyle(
+                color: TossColor.bluegrey,
+                fontSize: 12,
+                fontWeight: FontWeight.w200,
+              ),
+            ),
           ),
-          subtitle: Text("잔여금액"),
+          subtitle: Text(
+            "${service.f.format(bank.balance)} 원",
+            style: TextStyle(
+              color: TossColor.black,
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
           contentPadding: EdgeInsets.zero, // ListTile의 외곽 padding값.
           trailing: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SendPage(fromBank: bank),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              onPrimary: TossColor.bluegrey,
+              primary: TossColor.grey2,
+            ),
             child: Text("송금"),
           ),
         );
