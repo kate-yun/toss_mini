@@ -1,6 +1,8 @@
+import 'dart:math';
+
 import 'package:chang_mini/config/colors.dart';
-import 'package:chang_mini/pages/send_page.dart';
 import 'package:chang_mini/services/bank_service.dart';
+import 'package:chang_mini/model/bank.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -49,6 +51,27 @@ class _AddPageState extends State<AddPage> {
   Widget build(BuildContext context) {
     return Consumer<BankService>(
       builder: (context, service, child) {
+        // 랜덤 숫자를 생성하여 임의의 은행이미지를 리턴.
+        String pickRandomImageOfBank() {
+          double ranDouble =
+              Random().nextDouble(); // double 타입 랜덤 숫자 생성(dart:math import필요)
+          if (ranDouble < 0.33) return 'assets/kakao_bank.png';
+          if (ranDouble < 0.67) return 'assets/sinhan_bank.png';
+          return 'assets/toss_bank.png';
+        }
+
+        // Bank생성 함수.
+        createBank() {
+          service.createdBank(
+            Bank(
+              name: nameController.text,
+              balance:
+                  int.tryParse(balanceController.text.replaceAll(',', '')) ?? 0,
+              bankImage: pickRandomImageOfBank(),
+            ),
+          );
+        }
+
         return GestureDetector(
           onTap: () {},
           child: Scaffold(
@@ -58,7 +81,7 @@ class _AddPageState extends State<AddPage> {
               elevation: 0,
               leading: IconButton(
                 onPressed: () {
-                  Navigator.pop(context); // 작업을 위한 임시 뒤로가기
+                  Navigator.pop(context); // 뒤로가기
                 },
                 icon: Icon(
                   Icons.arrow_back_ios,
@@ -67,15 +90,7 @@ class _AddPageState extends State<AddPage> {
               ),
               actions: [
                 TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            SendPage(), // SendPage 작업을 위한 임시이동
-                      ),
-                    );
-                  },
+                  onPressed: () {},
                   child: Text("확인"),
                 ),
               ],
@@ -108,7 +123,9 @@ class _AddPageState extends State<AddPage> {
                             textAlign: TextAlign.end,
                             controller: nameController,
                             focusNode: nameNode,
-                            onSubmitted: (value) {},
+                            onSubmitted: (value) {
+                              balanceNode.requestFocus();
+                            },
                             suffix: Text("은행"),
                           ),
                         ),
@@ -127,9 +144,26 @@ class _AddPageState extends State<AddPage> {
                             focusNode: balanceNode,
                             keyboardType: TextInputType.number, // 키보드타입 숫자 입력모드
                             suffix: Text("원"),
-                            onChanged:
-                                (value) {}, // onSubmitted, onChanged 차이??
+                            onChanged: (value) {
+                              if (value != '') {
+                                String s = service.f.format(
+                                  // service.f는 BankService의 Numberformat.
+                                  int.tryParse(
+                                    // int.tryParse 문자열 매개변수를 받아 정수로 변환하는 함수
+                                    value.replaceAll(',', ''),
+                                    // 문자열 치환
+                                  ),
+                                );
+                                balanceController.value = TextEditingValue(
+                                  text: s,
+                                  selection:
+                                      TextSelection.collapsed(offset: s.length),
+                                );
+                                // 입력 text의 길이 만큼에 s 포멧을 적용하여 띄워 줌.
+                              }
+                            },
                           ),
+                          // TextField에서 onSubmitted:키보드로 엔터 클릭 시 호출, onChanged:text가 입력될 때 마다 호출
                         ),
                       ],
                     ),
@@ -176,7 +210,23 @@ class _AddPageState extends State<AddPage> {
                     ),
                     SizedBox(height: 32),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        if (nameNode.hasFocus) {
+                          // nameNode에 focus되있을 때
+                          balanceNode.requestFocus(); // balanceNode로 focus 요청.
+                        } else if (nameController.text != '' &&
+                            balanceController.text != '') {
+                          // nameController와 balanceController가 비어있지 않으면
+                          createBank(); // createBank() 함수 호출
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              backgroundColor: TossColor.blue,
+                              content: Text("개설 완료"),
+                            ),
+                          );
+                        }
+                      },
                       style: ElevatedButton.styleFrom(
                         minimumSize: Size(double.infinity, 52),
                         onPrimary: TossColor.white,
