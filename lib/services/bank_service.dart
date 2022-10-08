@@ -13,4 +13,18 @@ class BankService extends ChangeNotifier {
 
     notifyListeners(); // 새로고침.
   }
+
+  // 송금을 위한 메서드
+  Future<bool> sendMoney(Bank fromBank, Bank toBank, int money) async {
+    if ((fromBank.balance ?? 0) < money) {
+      // 송금 보낼 은행의 잔금이 money입력값보다 작을 경우
+      return false;
+    }
+
+    fromBank.balance = (fromBank.balance ?? 0) - money;
+    toBank.balance = (toBank.balance ?? 0) + money;
+
+    notifyListeners();
+    return true;
+  }
 }

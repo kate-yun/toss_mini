@@ -55,8 +55,10 @@ class _AddPageState extends State<AddPage> {
         String pickRandomImageOfBank() {
           double ranDouble =
               Random().nextDouble(); // double 타입 랜덤 숫자 생성(dart:math import필요)
-          if (ranDouble < 0.33) return 'assets/kakao_bank.png';
-          if (ranDouble < 0.67) return 'assets/sinhan_bank.png';
+          if (ranDouble < 0.20) return 'assets/kakao_bank.png';
+          if (ranDouble < 0.40) return 'assets/sinhan_bank.png';
+          if (ranDouble < 0.60) return 'assets/hana_bank.png';
+          if (ranDouble < 0.80) return 'assets/kb_bank.png';
           return 'assets/toss_bank.png';
         }
 
