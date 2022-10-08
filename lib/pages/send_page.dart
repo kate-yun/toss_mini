@@ -162,9 +162,7 @@ class _SendPageState extends State<SendPage> {
                                     width: 32,
                                   ), // AlertDialog에 이미지를 띄우고
                                   title: Text(
-                                    '${toBank?.name} 으로 ${int.tryParse(
-                                      moneyController.text.replaceAll(',', ''),
-                                    )} 원을 보내시겠어요?',
+                                    '${toBank?.name}은행으로 ${moneyController.text}원을 보내시겠어요?',
                                     style: TextStyle(
                                       color: TossColor.black,
                                       fontSize: 24,
@@ -173,9 +171,25 @@ class _SendPageState extends State<SendPage> {
                                   ), // title로 경고 메시지를 띄운다.
                                   actions: [
                                     TextButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        service.sendMoney(
+                                            widget.fromBank,
+                                            toBank!,
+                                            int.tryParse(moneyController.text
+                                                    .replaceAll(',', '')) ??
+                                                0);
+                                        Navigator.pop(context); // Dialog 닫기
+                                        Navigator.pop(context); // sendPage 닫기
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            backgroundColor: TossColor.blue,
+                                            content: Text("전송 완료"),
+                                          ),
+                                        );
+                                      },
                                       child: Text("보내기"),
-                                    )
+                                    ),
                                   ],
                                 );
                               });
